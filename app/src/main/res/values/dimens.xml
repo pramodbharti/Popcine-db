@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_margin">4dp</dimen>
+    <dimen name="card_elevation">3dp</dimen>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="padding">8dp</dimen>
+    <dimen name="card_right_margin">16dp</dimen>
+    <dimen name="card_top_margin">16dp</dimen>
+    <dimen name="rating_height">36dp</dimen>
+    <dimen name="rating_radius">18dp</dimen>
+</resources>
