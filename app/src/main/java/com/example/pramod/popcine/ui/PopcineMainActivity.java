@@ -3,7 +3,6 @@ package com.example.pramod.popcine.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import com.example.pramod.popcine.BuildConfig;
 import com.example.pramod.popcine.R;
 import com.example.pramod.popcine.adapter.MovieAdapter;
-import com.example.pramod.popcine.data.MovieDatabase;
 import com.example.pramod.popcine.model.Movie;
 import com.example.pramod.popcine.model.MovieResponse;
 import com.example.pramod.popcine.network.PopcineApiClient;
@@ -65,7 +62,6 @@ public class PopcineMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_popcine);
         ButterKnife.bind(this);
-
         movieList = new ArrayList<>();
 
         Fade fade = new Fade();
@@ -78,8 +74,8 @@ public class PopcineMainActivity extends AppCompatActivity {
         getWindow().setExitTransition(fade);
 
         //Loads popular movies on the launch of app
-        loadPopularMovies();
 
+        loadPopularMovies();
         int spanCount = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 4 : 2;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), spanCount);
 
@@ -147,6 +143,21 @@ public class PopcineMainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupViewModel() {
+        setTitle(getResources().getString(R.string.favorite_movies));
+        MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+        viewModel.getMoviesList().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movie) {
+                if (movieList.size() > 0) {
+                    movieList.clear();
+                }
+                movieList.addAll(movie);
+                movieAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     public void makeMovieApiRequest(Call<MovieResponse> call) {
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -191,8 +202,7 @@ public class PopcineMainActivity extends AppCompatActivity {
                 loadTopRatedMovies();
                 return true;
             case R.id.favorite_movies:
-                Intent intent = new Intent(PopcineMainActivity.this,FavoriteMovieActivity.class);
-                startActivity(intent);
+                setupViewModel();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

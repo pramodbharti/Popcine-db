@@ -30,9 +30,6 @@
             android:name=".ui.PopcineDetailActivity"
             android:label="@string/app_name"
             android:parentActivityName=".ui.PopcineMainActivity"/>
-        <activity android:name=".ui.FavoriteMovieActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".ui.PopcineMainActivity"/>
     </application>
 
 </manifest>
