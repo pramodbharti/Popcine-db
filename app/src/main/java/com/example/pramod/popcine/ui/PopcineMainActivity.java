@@ -1,14 +1,19 @@
 package com.example.pramod.popcine.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +23,14 @@ import android.widget.Toast;
 
 import com.example.pramod.popcine.BuildConfig;
 import com.example.pramod.popcine.R;
-import com.example.pramod.popcine.adapter.PopcineAdapter;
-import com.example.pramod.popcine.model.Popcine;
-import com.example.pramod.popcine.model.PopcineResponse;
+import com.example.pramod.popcine.adapter.MovieAdapter;
+import com.example.pramod.popcine.data.MovieDatabase;
+import com.example.pramod.popcine.model.Movie;
+import com.example.pramod.popcine.model.MovieResponse;
 import com.example.pramod.popcine.network.PopcineApiClient;
 import com.example.pramod.popcine.network.PopcineApiInterface;
+import com.example.pramod.popcine.utils.Constants;
+import com.example.pramod.popcine.utils.MovieViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +41,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.pramod.popcine.network.PopcineApiClient.retrofit;
+
 public class PopcineMainActivity extends AppCompatActivity {
 
-    private PopcineResponse popcineResponse;
-    private List<Popcine> popcineList;
-    private PopcineAdapter popcineAdapter;
+    private MovieResponse movieResponse;
+    private List<Movie> movieList;
+    private MovieAdapter movieAdapter;
 
     @BindView(R.id.popcine_recyclerview)
     RecyclerView recyclerView;
@@ -56,13 +66,13 @@ public class PopcineMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_popcine);
         ButterKnife.bind(this);
 
-        popcineList = new ArrayList<>();
+        movieList = new ArrayList<>();
 
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
-        fade.excludeTarget(decor.findViewById(R.id.action_bar_container),true);
-        fade.excludeTarget(android.R.id.statusBarBackground,true);
-        fade.excludeTarget(android.R.id.navigationBarBackground,true);
+        fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
+        fade.excludeTarget(android.R.id.statusBarBackground, true);
+        fade.excludeTarget(android.R.id.navigationBarBackground, true);
 
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
@@ -75,8 +85,8 @@ public class PopcineMainActivity extends AppCompatActivity {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
-        popcineAdapter = new PopcineAdapter(popcineList, this, PopcineMainActivity.this);
-        recyclerView.setAdapter(popcineAdapter);
+        movieAdapter = new MovieAdapter(movieList, this, PopcineMainActivity.this);
+        recyclerView.setAdapter(movieAdapter);
 
     }
 
@@ -111,56 +121,58 @@ public class PopcineMainActivity extends AppCompatActivity {
 
     //This method will load Popular movies
     public void loadPopularMovies() {
+        setTitle(getResources().getString(R.string.popular_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
-                setTitle(getResources().getString(R.string.popular_movies));
-                PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient().
+                PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
                         create(PopcineApiInterface.class);
-                Call<PopcineResponse> popcineResponseCall = popcineApiInterface.getPopularMovies(apiKey);
-                makeApiRequest(popcineResponseCall);
+                Call<MovieResponse> movieResponseCall = popcineApiInterface.getPopularMovies(apiKey);
+                makeMovieApiRequest(movieResponseCall);
+                retrofit = null;
             }
         }
     }
 
     //This method will load top rated movies
     public void loadTopRatedMovies() {
+        setTitle(getResources().getString(R.string.top_rated_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
-                setTitle(getResources().getString(R.string.top_rated_movies));
-                PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient().
+                PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
                         create(PopcineApiInterface.class);
-                Call<PopcineResponse> popcineResponseCall = popcineApiInterface.getTopRatedMovies(apiKey);
-                makeApiRequest(popcineResponseCall);
+                Call<MovieResponse> movieResponseCall = popcineApiInterface.getTopRatedMovies(apiKey);
+                makeMovieApiRequest(movieResponseCall);
+                retrofit = null;
             }
         }
     }
 
-
-    public void makeApiRequest(Call<PopcineResponse> call) {
-        call.enqueue(new Callback<PopcineResponse>() {
+    public void makeMovieApiRequest(Call<MovieResponse> call) {
+        call.enqueue(new Callback<MovieResponse>() {
             @Override
-            public void onResponse(Call<PopcineResponse> call, Response<PopcineResponse> response) {
-                popcineResponse = response.body();
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                movieResponse = response.body();
 
-                if (popcineList != null) {
-                    popcineList.removeAll(popcineList);
+                if (movieList != null) {
+                    movieList.removeAll(movieList);
                 }
 
-                if (popcineResponse != null) {
-                    popcineList.addAll(popcineResponse.getResults());
+                if (movieResponse != null) {
+                    movieList.addAll(movieResponse.getResults());
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.data_not), Toast.LENGTH_LONG).show();
                 }
-                popcineAdapter.notifyDataSetChanged();
+                movieAdapter.notifyDataSetChanged();
 
             }
 
             @Override
-            public void onFailure(Call<PopcineResponse> call, Throwable t) {
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.failed_loading), Toast.LENGTH_LONG).show();
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,6 +189,10 @@ public class PopcineMainActivity extends AppCompatActivity {
                 return true;
             case R.id.toprated_movies:
                 loadTopRatedMovies();
+                return true;
+            case R.id.favorite_movies:
+                Intent intent = new Intent(PopcineMainActivity.this,FavoriteMovieActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

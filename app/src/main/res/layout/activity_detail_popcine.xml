@@ -1,104 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".ui.PopcineDetailActivity">
 
-    <ImageView
-        android:id="@+id/backdrop_poster"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/backdrop_image"
-        android:src="@drawable/popcine" />
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/card_right_margin"
-        android:layout_marginTop="@dimen/card_top_margin"
-        card_view:cardElevation="@dimen/card_elevation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movie_title">
-    <ImageView
-        android:id="@+id/poster"
-        android:transitionName="poster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/popcine"
-        android:contentDescription="@string/poster_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movie_title" />
-    </android.support.v7.widget.CardView>
-    <TextView
-        android:id="@+id/lbl_movie_title"
-        style="@style/TextStyle"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:text="@string/movie_title"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/backdrop_poster"
-       />
+        tools:context=".ui.PopcineDetailActivity">
 
-    <TextView
-        android:id="@+id/movie_title"
-        style="@style/TextStyle"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:text="@string/movie_title"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_movie_title" />
-    <TextView
-        android:id="@+id/lbl_release_date"
-        style="@style/TextStyle"
-        android:text="@string/release_date"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@+id/movie_title"
-        />
-    <TextView
-        android:id="@+id/release_date"
-        style="@style/TextStyle"
-        android:text="@string/release_date"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_release_date" />
-    <TextView
-        android:id="@+id/lbl_rating"
-        style="@style/TextStyle"
-        android:layout_height="@dimen/rating_height"
-        android:text="@string/rating"
-        android:textColor="@color/colorPrimary"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/release_date"
-        />
-    <TextView
-        android:id="@+id/vote_average"
-        style="@style/TextStyle"
-        android:background="@drawable/average_rating_circle"
-        android:gravity="center"
-        android:text="@string/average_rating"
-        android:textStyle="bold"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintStart_toEndOf="@id/lbl_rating"
-        app:layout_constraintTop_toBottomOf="@id/release_date" />
+        <ImageView
+            android:id="@+id/backdrop_poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/backdrop_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/popcine" />
 
-    <TextView
-        android:id="@+id/lbl_overview"
-        style="@style/TextStyle"
-        android:text="@string/overview"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/lbl_rating" />
-    <TextView
-        android:id="@+id/overview"
-        style="@style/TextStyle"
-        android:text="@string/overview"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/lbl_overview" />
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/card_right_margin"
+            android:layout_marginTop="@dimen/card_top_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_title"
+            card_view:cardElevation="@dimen/card_elevation">
 
-</android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/poster_image"
+                android:src="@drawable/popcine"
+                android:transitionName="poster"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/movie_title" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/lbl_movie_title"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:text="@string/movie_title"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/backdrop_poster" />
+
+        <TextView
+            android:id="@+id/movie_title"
+            style="@style/TextStyle"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:text="@string/movie_title"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_movie_title" />
+
+        <TextView
+            android:id="@+id/lbl_release_date"
+            style="@style/TextStyle"
+            android:text="@string/release_date"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/movie_title" />
+
+        <TextView
+            android:id="@+id/release_date"
+            style="@style/TextStyle"
+            android:text="@string/release_date"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/lbl_release_date" />
+
+        <TextView
+            android:id="@+id/lbl_rating"
+            style="@style/TextStyle"
+            android:layout_height="@dimen/rating_height"
+            android:gravity="center_vertical"
+            android:text="@string/rating"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@+id/release_date" />
+
+        <TextView
+            android:id="@+id/vote_average"
+            style="@style/TextStyle"
+            android:background="@drawable/average_rating_circle"
+            android:gravity="center"
+            android:text="@string/average_rating"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/lbl_rating"
+            app:layout_constraintTop_toBottomOf="@id/release_date" />
+
+        <ImageButton
+            android:id="@+id/favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_is_favorite_border"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintStart_toEndOf="@id/vote_average"
+            app:layout_constraintTop_toBottomOf="@id/release_date" />
+
+        <TextView
+            android:id="@+id/lbl_overview"
+            style="@style/TextStyle"
+            android:text="@string/overview"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@id/lbl_rating" />
+
+        <TextView
+            android:id="@+id/overview"
+            style="@style/TextStyle"
+            android:text="@string/overview"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/lbl_overview" />
+
+        <View
+            android:id="@+id/separator_overview"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccc"
+            app:layout_constraintTop_toBottomOf="@id/overview" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_trailers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/separator_overview">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/lbl_trailers"
+                    style="@style/TextStyle"
+                    android:text="Trailers"
+                    android:textColor="@color/colorPrimary" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_trailers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/separator_trailers"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#ccc" />
+
+                <TextView
+                    android:id="@+id/lbl_reviews"
+                    style="@style/TextStyle"
+                    android:text="Reviews"
+                    android:textColor="@color/colorPrimary" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -2,15 +2,19 @@
     <string name="app_name">Popcine</string>
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="popular_movies">Popular Movies</string>
+    <string name="favorite_movies">Favorite Movies</string>
+    <string name="added_to_favorite">Added to favorite</string>
+    <string name="removed_from_favorite">Removed from favorite</string>
     <string name="poster_image">Poster Image</string>
     <string name="backdrop_image">Backdrop Image</string>
     <string name="movie_title">Title</string>
     <string name="release_date">Release Date</string>
     <string name="rating">Rating</string>
     <string name="overview">Overview</string>
-    <string name="average_rating">8.3</string>
+    <string name="average_rating">5.3</string>
     <string name="failed_loading">Failed loading data</string>
     <string name="data_not">Data not available</string>
     <string name="insert_api">Please insert your API KEY in the code</string>
     <string name="no_internet">No internet available</string>
+
 </resources>

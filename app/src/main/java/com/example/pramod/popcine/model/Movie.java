@@ -1,13 +1,23 @@
 package com.example.pramod.popcine.model;
 
-import android.content.Intent;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.example.pramod.popcine.utils.Constants;
 import com.google.gson.annotations.SerializedName;
 
-public class Popcine implements Parcelable {
+@Entity(tableName = Constants.TABLE)
+public class Movie implements Parcelable {
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = Constants.ID)
+    @SerializedName(Constants.ID)
+    private String id ;
 
     @SerializedName(Constants.TITLE)
     private String title;
@@ -16,7 +26,7 @@ public class Popcine implements Parcelable {
     private String releaseDate;
 
     @SerializedName(Constants.VOTE_AVERAGE)
-    private Double voteAverage;
+    private String voteAverage;
 
     @SerializedName(Constants.POSTER_PATH)
     private String posterPath;
@@ -27,10 +37,9 @@ public class Popcine implements Parcelable {
     @SerializedName(Constants.OVERVIEW)
     private String overview;
 
-
-
-    public Popcine(String title, String releaseDate, Double voteAverage,
-                   String posterPath, String backdropPath, String overview){
+    public Movie(@NonNull String id, String title, String releaseDate, String voteAverage,
+                 String posterPath, String backdropPath, String overview) {
+        this.id = id;
         this.title = title;
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
@@ -41,13 +50,14 @@ public class Popcine implements Parcelable {
 
     // write object to parcel for storage
 
-    public void writeToParcel(Parcel dest, int flags){
+    public void writeToParcel(Parcel dest, int flags) {
 
         // Write all properties to the parcel
 
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(releaseDate);
-        dest.writeDouble(voteAverage);
+        dest.writeString(voteAverage);
         dest.writeString(posterPath);
         dest.writeString(backdropPath);
         dest.writeString(overview);
@@ -56,13 +66,14 @@ public class Popcine implements Parcelable {
 
     // Constructor used for parcel
 
-    public Popcine(Parcel parcel){
+    public Movie(Parcel parcel) {
 
         // read and set saved values from parcel
 
+        id = parcel.readString();
         title = parcel.readString();
         releaseDate = parcel.readString();
-        voteAverage = parcel.readDouble();
+        voteAverage = parcel.readString();
         posterPath = parcel.readString();
         backdropPath = parcel.readString();
         overview = parcel.readString();
@@ -71,16 +82,16 @@ public class Popcine implements Parcelable {
 
     // creator - used when un-parceling our parcel (creating the object)
 
-    public static final Parcelable.Creator<Popcine> CREATOR = new
-            Parcelable.Creator<Popcine>(){
+    public static final Parcelable.Creator<Movie> CREATOR = new
+            Parcelable.Creator<Movie>() {
                 @Override
-                public Popcine createFromParcel(Parcel source) {
-                    return new Popcine(source);
+                public Movie createFromParcel(Parcel source) {
+                    return new Movie(source);
                 }
 
                 @Override
-                public Popcine[] newArray(int size) {
-                    return new Popcine[0];
+                public Movie[] newArray(int size) {
+                    return new Movie[0];
                 }
             };
 
@@ -91,7 +102,14 @@ public class Popcine implements Parcelable {
         return hashCode();
     }
 
+    @NonNull
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -109,11 +127,11 @@ public class Popcine implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public Double getVoteAverage() {
+    public String getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(Double voteAverage) {
+    public void setVoteAverage(String voteAverage) {
         this.voteAverage = voteAverage;
     }
 
