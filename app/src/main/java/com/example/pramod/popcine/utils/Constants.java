@@ -16,6 +16,8 @@ public class Constants {
 
     public static final String DATABASE = "movies";
     public static final String TABLE = "movies_table";
+    public static final String SHARED_PREF_KEY="popularList";
+    public static final String SHARED_PREF_MOVIE="Movies";
 
     public static final String PAGE = "page";
     public static final String TOTAL_PAGES = "total_pages";

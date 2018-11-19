@@ -25,11 +25,21 @@
         </activity>
         <activity
             android:name=".ui.PopcineMainActivity"
-            android:label="@string/app_name"/>
+            android:label="@string/app_name" />
         <activity
             android:name=".ui.PopcineDetailActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".ui.PopcineMainActivity"/>
+            android:parentActivityName=".ui.PopcineMainActivity" />
+
+        <receiver android:name=".widget.PopularMoviesWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/popular_movies_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

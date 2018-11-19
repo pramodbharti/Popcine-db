@@ -16,5 +16,7 @@
     <string name="data_not">Data not available</string>
     <string name="insert_api">Please insert your API KEY in the code</string>
     <string name="no_internet">No internet available</string>
+    <string name="appwidget_text">Popcine</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

@@ -77,4 +77,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             ButterKnife.bind(this, view);
         }
     }
+
+    public void update(List<Movie> movieList) {
+        this.movieList = movieList;
+        notifyDataSetChanged();
+    }
 }

@@ -1,11 +1,17 @@
 package com.example.pramod.popcine.ui;
 
+import android.appwidget.AppWidgetManager;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -13,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +36,7 @@ import com.example.pramod.popcine.network.PopcineApiClient;
 import com.example.pramod.popcine.network.PopcineApiInterface;
 import com.example.pramod.popcine.utils.Constants;
 import com.example.pramod.popcine.utils.MovieViewModel;
+import com.example.pramod.popcine.widget.PopularMoviesWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +65,13 @@ public class PopcineMainActivity extends AppCompatActivity {
     TextView no_internet;
 
     private final static String apiKey = BuildConfig.API_KEY;
-    private static final String LIST_STATE = "list_state";
-    private Parcelable savedRecyclerViewState;
+    private static String DATA_KEY = "data_key";
+    private static String STATE_KEY = "state_key";
+    Parcelable listState;
+
+    private static void log(String message) {
+        Log.d("Test", message);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,9 +87,12 @@ public class PopcineMainActivity extends AppCompatActivity {
 
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
-        restorePosition();
-        //Loads popular movies on the launch of app
-        loadPopularMovies();
+        if (savedInstanceState != null) {
+            movieList = savedInstanceState.getStringArrayList(DATA_KEY);
+            listState = savedInstanceState.getParcelable(STATE_KEY);
+
+        }
+
         int spanCount = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 4 : 2;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), spanCount);
 
@@ -84,6 +100,17 @@ public class PopcineMainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
         movieAdapter = new MovieAdapter(movieList, this, PopcineMainActivity.this);
         recyclerView.setAdapter(movieAdapter);
+
+        if (movieList == null) {
+            loadPopularMovies();
+            log("Fetching data");
+        } else {
+            log("Saved data");
+            movieAdapter.update(movieList);
+            if (listState != null) {
+                recyclerView.getLayoutManager().onRestoreInstanceState(listState);
+            }
+        }
 
 
     }
@@ -119,7 +146,6 @@ public class PopcineMainActivity extends AppCompatActivity {
 
     //This method will load Popular movies
     public void loadPopularMovies() {
-        setTitle(getResources().getString(R.string.popular_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
                 PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
@@ -133,7 +159,6 @@ public class PopcineMainActivity extends AppCompatActivity {
 
     //This method will load top rated movies
     public void loadTopRatedMovies() {
-        setTitle(getResources().getString(R.string.top_rated_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
                 PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
@@ -146,7 +171,6 @@ public class PopcineMainActivity extends AppCompatActivity {
     }
 
     private void loadFavoriteMovies() {
-        setTitle(getResources().getString(R.string.favorite_movies));
         MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMoviesList().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -175,6 +199,7 @@ public class PopcineMainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.data_not), Toast.LENGTH_LONG).show();
                 }
+                saveDataToSharedPrefs(movieList);
                 movieAdapter.notifyDataSetChanged();
 
             }
@@ -187,26 +212,22 @@ public class PopcineMainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        savedRecyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-        outState.putParcelable(LIST_STATE, savedRecyclerViewState);
+        outState.putParcelable(DATA_KEY, (ArrayList<Movie>) movieList);
+        Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(STATE_KEY, listState);
     }
 
-    @Override
+   @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            savedRecyclerViewState = savedInstanceState.getParcelable(LIST_STATE);
+            movieList = savedInstanceState.getStringArrayList(DATA_KEY);
+            listState = savedInstanceState.getParcelable(STATE_KEY);
         }
     }
 
-    private void restorePosition() {
-        if (savedRecyclerViewState != null) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerViewState);
-            savedRecyclerViewState = null;
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -219,16 +240,56 @@ public class PopcineMainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popular_movies:
+                setTitle(getResources().getString(R.string.popular_movies));
                 loadPopularMovies();
                 return true;
             case R.id.toprated_movies:
+                setTitle(getResources().getString(R.string.top_rated_movies));
                 loadTopRatedMovies();
                 return true;
             case R.id.favorite_movies:
+                setTitle(getResources().getString(R.string.favorite_movies));
                 loadFavoriteMovies();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    public void saveDataToSharedPrefs(List<Movie> movieList) {
+
+        Intent intent = new Intent(getApplicationContext(), PopularMoviesWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        int[] ids = AppWidgetManager.getInstance(getApplicationContext())
+                .getAppWidgetIds(new ComponentName(getApplication(), PopularMoviesWidget.class));
+
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        getApplication().sendBroadcast(intent);
+
+        StringBuilder builder = new StringBuilder();
+        int temp = 0;
+
+        for (int i = 0; i < movieList.size(); i++) {
+            if (movieList.get(i).getTitle() != null) {
+                temp++;
+                builder.append(temp)
+                        .append(". ")
+                        .append(movieList.get(i).getTitle())
+                        .append("          (")
+                        .append(movieList.get(i).getVoteAverage())
+                        .append(")\n");
+            }
+
+            if (temp == 5) {
+                break;
+            }
+        }
+
+        SharedPreferences sharedPref = getApplication().getSharedPreferences(Constants.SHARED_PREF_MOVIE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Constants.SHARED_PREF_KEY, builder.toString());
+        editor.apply();
     }
 }
