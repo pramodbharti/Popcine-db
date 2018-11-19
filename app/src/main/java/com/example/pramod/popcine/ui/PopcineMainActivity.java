@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -56,6 +57,8 @@ public class PopcineMainActivity extends AppCompatActivity {
     TextView no_internet;
 
     private final static String apiKey = BuildConfig.API_KEY;
+    private static final String LIST_STATE = "list_state";
+    private Parcelable savedRecyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,6 @@ public class PopcineMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_popcine);
         ButterKnife.bind(this);
         movieList = new ArrayList<>();
-
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
         fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
@@ -72,9 +74,8 @@ public class PopcineMainActivity extends AppCompatActivity {
 
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
-
+        restorePosition();
         //Loads popular movies on the launch of app
-
         loadPopularMovies();
         int spanCount = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ? 4 : 2;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), spanCount);
@@ -83,6 +84,7 @@ public class PopcineMainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
         movieAdapter = new MovieAdapter(movieList, this, PopcineMainActivity.this);
         recyclerView.setAdapter(movieAdapter);
+
 
     }
 
@@ -143,7 +145,7 @@ public class PopcineMainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupViewModel() {
+    private void loadFavoriteMovies() {
         setTitle(getResources().getString(R.string.favorite_movies));
         MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMoviesList().observe(this, new Observer<List<Movie>>() {
@@ -184,6 +186,27 @@ public class PopcineMainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        savedRecyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(LIST_STATE, savedRecyclerViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            savedRecyclerViewState = savedInstanceState.getParcelable(LIST_STATE);
+        }
+    }
+
+    private void restorePosition() {
+        if (savedRecyclerViewState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerViewState);
+            savedRecyclerViewState = null;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -202,7 +225,7 @@ public class PopcineMainActivity extends AppCompatActivity {
                 loadTopRatedMovies();
                 return true;
             case R.id.favorite_movies:
-                setupViewModel();
+                loadFavoriteMovies();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

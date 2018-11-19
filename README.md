@@ -1,4 +1,4 @@
-# Popcine-db | Popular Movies project stage 1
+# Popcine
 
 ![Popcine app screenshots](https://github.com/pramodbharti/Popcine-db/blob/master/Popcine.jpeg)
 
