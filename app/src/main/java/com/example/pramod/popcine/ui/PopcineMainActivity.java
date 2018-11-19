@@ -1,7 +1,6 @@
 package com.example.pramod.popcine.ui;
 
 import android.appwidget.AppWidgetManager;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
@@ -11,21 +10,22 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pramod.popcine.BuildConfig;
 import com.example.pramod.popcine.R;
@@ -51,27 +51,23 @@ import static com.example.pramod.popcine.network.PopcineApiClient.retrofit;
 
 public class PopcineMainActivity extends AppCompatActivity {
 
-    private MovieResponse movieResponse;
-    private List<Movie> movieList;
-    private MovieAdapter movieAdapter;
-
-    @BindView(R.id.popcine_recyclerview)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.placeholder_logo)
-    ImageView placeholder_logo;
-
-    @BindView(R.id.no_internet)
-    TextView no_internet;
-
     private final static String apiKey = BuildConfig.API_KEY;
     private static String DATA_KEY = "data_key";
     private static String STATE_KEY = "state_key";
-    Parcelable listState;
-
-    private static void log(String message) {
-        Log.d("Test", message);
-    }
+    private static String TITLE = "title";
+    @BindView(R.id.rl_main)
+    RelativeLayout rlMain;
+    @BindView(R.id.popcine_recyclerview)
+    RecyclerView recyclerView;
+    @BindView(R.id.placeholder_logo)
+    ImageView placeholder_logo;
+    @BindView(R.id.no_internet)
+    TextView no_internet;
+    private MovieResponse movieResponse;
+    private List<Movie> movieList;
+    private MovieAdapter movieAdapter;
+    private String title;
+    private Parcelable listState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +84,9 @@ public class PopcineMainActivity extends AppCompatActivity {
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
         if (savedInstanceState != null) {
-            movieList = savedInstanceState.getStringArrayList(DATA_KEY);
+            movieList = savedInstanceState.getParcelableArrayList(DATA_KEY);
             listState = savedInstanceState.getParcelable(STATE_KEY);
+            title = savedInstanceState.getString(TITLE);
 
         }
 
@@ -101,18 +98,25 @@ public class PopcineMainActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter(movieList, this, PopcineMainActivity.this);
         recyclerView.setAdapter(movieAdapter);
 
-        if (movieList == null) {
+        if (savedInstanceState == null && movieList.size() <= 0) {
             loadPopularMovies();
-            log("Fetching data");
         } else {
-            log("Saved data");
+            setTitle(title);
+            if (movieList.size() <= 0) {
+                placeholder_logo.setVisibility(View.VISIBLE);
+                no_internet.setText(getResources().getString(R.string.no_favorite));
+                no_internet.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                placeholder_logo.setVisibility(View.GONE);
+                no_internet.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
             movieAdapter.update(movieList);
             if (listState != null) {
                 recyclerView.getLayoutManager().onRestoreInstanceState(listState);
             }
         }
-
-
     }
 
 
@@ -137,6 +141,7 @@ public class PopcineMainActivity extends AppCompatActivity {
             return true;
         } else {
             placeholder_logo.setVisibility(View.VISIBLE);
+            no_internet.setText(getResources().getString(R.string.no_internet));
             no_internet.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             return false;
@@ -146,6 +151,7 @@ public class PopcineMainActivity extends AppCompatActivity {
 
     //This method will load Popular movies
     public void loadPopularMovies() {
+        setTitle(getResources().getString(R.string.popular_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
                 PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
@@ -159,6 +165,7 @@ public class PopcineMainActivity extends AppCompatActivity {
 
     //This method will load top rated movies
     public void loadTopRatedMovies() {
+        setTitle(getResources().getString(R.string.top_rated_movies));
         if (checkApiKey()) {
             if (checkInternet()) {
                 PopcineApiInterface popcineApiInterface = PopcineApiClient.getClient(Constants.BASE_URL).
@@ -171,6 +178,7 @@ public class PopcineMainActivity extends AppCompatActivity {
     }
 
     private void loadFavoriteMovies() {
+        setTitle(getResources().getString(R.string.favorite_movies));
         MovieViewModel viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
         viewModel.getMoviesList().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -179,6 +187,16 @@ public class PopcineMainActivity extends AppCompatActivity {
                     movieList.clear();
                 }
                 movieList.addAll(movie);
+                if (movieList.size() > 0) {
+                    placeholder_logo.setVisibility(View.GONE);
+                    no_internet.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    placeholder_logo.setVisibility(View.VISIBLE);
+                    no_internet.setText(getResources().getString(R.string.no_favorite));
+                    no_internet.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                }
                 movieAdapter.notifyDataSetChanged();
             }
         });
@@ -197,7 +215,7 @@ public class PopcineMainActivity extends AppCompatActivity {
                 if (movieResponse != null) {
                     movieList.addAll(movieResponse.getResults());
                 } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.data_not), Toast.LENGTH_LONG).show();
+                    callSnackBar(getResources().getString(R.string.data_not));
                 }
                 saveDataToSharedPrefs(movieList);
                 movieAdapter.notifyDataSetChanged();
@@ -206,25 +224,34 @@ public class PopcineMainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.failed_loading), Toast.LENGTH_LONG).show();
+                callSnackBar(getResources().getString(R.string.failed_loading));
             }
         });
+    }
+
+    public void callSnackBar(String message) {
+        Snackbar snackbar = Snackbar.make(rlMain, Html.fromHtml(getResources().getString(R.string.html_open_tag) + message + getResources().getString(R.string.html_close_tag)), BaseTransientBottomBar.LENGTH_SHORT);
+        View sbView = snackbar.getView();
+        sbView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        snackbar.show();
     }
 
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(DATA_KEY, (ArrayList<Movie>) movieList);
+        outState.putParcelableArrayList(DATA_KEY, (ArrayList<Movie>) movieList);
+        outState.putString(TITLE, getTitle().toString());
         Parcelable listState = recyclerView.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(STATE_KEY, listState);
     }
 
-   @Override
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            movieList = savedInstanceState.getStringArrayList(DATA_KEY);
+            movieList = savedInstanceState.getParcelableArrayList(DATA_KEY);
             listState = savedInstanceState.getParcelable(STATE_KEY);
+            title = savedInstanceState.getString(TITLE);
         }
     }
 
@@ -240,15 +267,12 @@ public class PopcineMainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popular_movies:
-                setTitle(getResources().getString(R.string.popular_movies));
                 loadPopularMovies();
                 return true;
             case R.id.toprated_movies:
-                setTitle(getResources().getString(R.string.top_rated_movies));
                 loadTopRatedMovies();
                 return true;
             case R.id.favorite_movies:
-                setTitle(getResources().getString(R.string.favorite_movies));
                 loadFavoriteMovies();
                 return true;
             default:

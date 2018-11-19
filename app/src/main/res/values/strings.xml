@@ -4,6 +4,7 @@
     <string name="popular_movies">Popular Movies</string>
     <string name="favorite_movies">Favorite Movies</string>
     <string name="added_to_favorite">Added to favorite</string>
+    <string name="no_favorite">No favorite movie</string>
     <string name="removed_from_favorite">Removed from favorite</string>
     <string name="poster_image">Poster Image</string>
     <string name="backdrop_image">Backdrop Image</string>
@@ -18,5 +19,8 @@
     <string name="no_internet">No internet available</string>
     <string name="appwidget_text">Popcine</string>
     <string name="add_widget">Add widget</string>
+    <string name="html_open_tag">&lt;b&gt;&lt;font color="#FFFFFF"&gt;</string>
+    <string name="html_close_tag">&lt;/font&gt;&lt;/b&gt;</string>
+
 
 </resources>

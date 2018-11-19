@@ -8,17 +8,17 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.transition.Fade;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pramod.popcine.BuildConfig;
 import com.example.pramod.popcine.R;
@@ -79,7 +79,7 @@ public class PopcineDetailActivity extends AppCompatActivity {
     private List<Review> reviewList;
     private ReviewAdapter reviewAdapter;
 
-    // Reviews
+    // Trailers
     @BindView(R.id.rv_trailers)
     RecyclerView rv_trailers;
     private List<Trailer> trailerList;
@@ -115,6 +115,7 @@ public class PopcineDetailActivity extends AppCompatActivity {
         getWindow().setExitTransition(fade);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         movieDatabase = MovieDatabase.getInstance(getApplicationContext());
         setupUI();
         isFavorite();
@@ -233,8 +234,8 @@ public class PopcineDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void callSnackBar( String message) {
-        Snackbar snackbar = Snackbar.make(clDetail, Html.fromHtml("<b><font color=\"#FFFFFF\">" + message + "</font></center></b>"), BaseTransientBottomBar.LENGTH_SHORT);
+    public void callSnackBar(String message) {
+        Snackbar snackbar = Snackbar.make(clDetail, Html.fromHtml(getResources().getString(R.string.html_open_tag) + message + getResources().getString(R.string.html_close_tag)), BaseTransientBottomBar.LENGTH_SHORT);
         View sbView = snackbar.getView();
         sbView.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         snackbar.show();
@@ -320,6 +321,16 @@ public class PopcineDetailActivity extends AppCompatActivity {
                 callSnackBar(getResources().getString(R.string.failed_loading));
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
