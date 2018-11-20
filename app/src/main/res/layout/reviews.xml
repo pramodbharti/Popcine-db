@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/margin"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="@dimen/padding">
 
     <LinearLayout
-        android:layout_width="256dp"
+        android:layout_width="@dimen/review_width"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -16,8 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:padding="4dp"
-            android:text="pramod"
+            android:padding="@dimen/author_content_padding"
+            android:text="@string/author"
             android:textStyle="bold" />
 
         <TextView
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:padding="4dp"
-            android:text="Lorem ipsum dolor sit amet,consectuer" />
+            android:padding="@dimen/author_content_padding"
+            android:text="@string/content" />
 
     </LinearLayout>
 

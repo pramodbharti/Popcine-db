@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:gravity="center_horizontal"
             android:text="@string/movie_title"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16sp"
             app:layout_constraintTop_toBottomOf="@+id/lbl_movie_title" />
 
         <TextView
@@ -69,7 +69,7 @@
             android:id="@+id/release_date"
             style="@style/TextStyle"
             android:text="@string/release_date"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_16sp"
             app:layout_constraintTop_toBottomOf="@+id/lbl_release_date" />
 
         <TextView
@@ -96,7 +96,7 @@
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/text_16sp"
             android:background="@drawable/ic_is_favorite_border"
             android:contentDescription="@string/app_name"
             app:layout_constraintStart_toEndOf="@id/vote_average"
@@ -119,7 +119,7 @@
         <View
             android:id="@+id/separator_overview"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/dim_1dp"
             android:background="#ccc"
             app:layout_constraintTop_toBottomOf="@id/overview" />
 
@@ -137,7 +137,7 @@
                 <TextView
                     android:id="@+id/lbl_trailers"
                     style="@style/TextStyle"
-                    android:text="Trailers"
+                    android:text="@string/trailers"
                     android:textColor="@color/colorPrimary" />
 
 
@@ -149,13 +149,13 @@
                 <View
                     android:id="@+id/separator_trailers"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="@dimen/dim_1dp"
                     android:background="#ccc" />
 
                 <TextView
                     android:id="@+id/lbl_reviews"
                     style="@style/TextStyle"
-                    android:text="Reviews"
+                    android:text="@string/reviews"
                     android:textColor="@color/colorPrimary" />
 
                 <android.support.v7.widget.RecyclerView

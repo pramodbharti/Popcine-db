@@ -12,10 +12,11 @@
 # How to run the app
 
 * Enter your TMDB API KEY in `gradle.properties` file like this `myApiKey="YOUR_API_KEY" `. If `gradle.properties` file doesn't exist, then you will have to create it.
+* Enter your Fabric API KEY in `fabric.properties` file like this `apiSecret=YOUR_API_KEY `. If `fabric.properties` file doesn't exist, then you will have to create it.
 * You must have Internet connectivity to load the movies data
 
 # Features
 
 * The api loads 20 movies detail at a time, when last 2 rows are visible, api loads next batch automatically.
-* You can change from Popular Movies to Top Rated Movies usin menu
+* You can change menu Popular Movies, Top Rated Movies and Favorite Movies
 * After clicking on poster image, you can see more details about that movie

@@ -40,6 +40,13 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/popular_movies_widget_info" />
         </receiver>
+        <!-- AdMob Id -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3360109812222062~7900942142"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c1a276a81bedd3d2a214d3732542c6b9d44657a0" />
     </application>
 
 </manifest>

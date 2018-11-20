@@ -21,6 +21,15 @@
     <string name="add_widget">Add widget</string>
     <string name="html_open_tag">&lt;b&gt;&lt;font color="#FFFFFF"&gt;</string>
     <string name="html_close_tag">&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="author">Author</string>
+    <string name="content">Content</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+
+
+    <!--AdMob-->
+    <string name="admob_app_id">ca-app-pub-3360109812222062~7900942142</string>
+    <string name="admob_unit_test_id">ca-app-pub-3940256099942544/6300978111</string>
 
 
 </resources>

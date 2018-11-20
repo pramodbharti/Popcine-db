@@ -37,6 +37,9 @@ import com.example.pramod.popcine.network.PopcineApiInterface;
 import com.example.pramod.popcine.utils.Constants;
 import com.example.pramod.popcine.utils.MovieViewModel;
 import com.example.pramod.popcine.widget.PopularMoviesWidget;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,8 @@ public class PopcineMainActivity extends AppCompatActivity {
     ImageView placeholder_logo;
     @BindView(R.id.no_internet)
     TextView no_internet;
+    @BindView(R.id.adView)
+    AdView adView;
     private MovieResponse movieResponse;
     private List<Movie> movieList;
     private MovieAdapter movieAdapter;
@@ -74,15 +79,22 @@ public class PopcineMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_popcine);
         ButterKnife.bind(this);
+
+        //Initialize AdMob
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
+
         movieList = new ArrayList<>();
         Fade fade = new Fade();
         View decor = getWindow().getDecorView();
         fade.excludeTarget(decor.findViewById(R.id.action_bar_container), true);
         fade.excludeTarget(android.R.id.statusBarBackground, true);
         fade.excludeTarget(android.R.id.navigationBarBackground, true);
-
         getWindow().setEnterTransition(fade);
         getWindow().setExitTransition(fade);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
         if (savedInstanceState != null) {
             movieList = savedInstanceState.getParcelableArrayList(DATA_KEY);
             listState = savedInstanceState.getParcelable(STATE_KEY);
@@ -98,20 +110,14 @@ public class PopcineMainActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter(movieList, this, PopcineMainActivity.this);
         recyclerView.setAdapter(movieAdapter);
 
-        if (savedInstanceState == null && movieList.size() <= 0) {
+        if (movieList.size() <= 0) {
             loadPopularMovies();
         } else {
+
             setTitle(title);
-            if (movieList.size() <= 0) {
-                placeholder_logo.setVisibility(View.VISIBLE);
-                no_internet.setText(getResources().getString(R.string.no_favorite));
-                no_internet.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-            } else {
-                placeholder_logo.setVisibility(View.GONE);
-                no_internet.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-            }
+            placeholder_logo.setVisibility(View.GONE);
+            no_internet.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
             movieAdapter.update(movieList);
             if (listState != null) {
                 recyclerView.getLayoutManager().onRestoreInstanceState(listState);

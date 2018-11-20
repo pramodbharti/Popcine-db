@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "936817664616",
+    "firebase_url": "https://popcine-8078e.firebaseio.com",
+    "project_id": "popcine-8078e",
+    "storage_bucket": "popcine-8078e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936817664616:android:4cd52e4f63c445b0",
+        "android_client_info": {
+          "package_name": "com.example.pramod.popcine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936817664616-ohc7p9rheo90s6e885gfa6b8l55rfg2r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWbwrErDTjhMisfE8X0NPLJnMNFtJOsUQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

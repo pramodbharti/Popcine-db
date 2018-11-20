@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:background="#809f9f9f"
-    android:layout_height="match_parent"
     android:id="@+id/rl_widget_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#809f9f9f"
     android:padding="@dimen/widget_margin">
 
     <TextView
@@ -10,10 +10,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/dim_10dp"
         android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_18sp"
         android:textStyle="bold" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="@dimen/dim_20dp"
+        android:padding="@dimen/card_top_margin" />
 
 </RelativeLayout>

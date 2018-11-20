@@ -9,9 +9,11 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.transition.Fade;
 import android.view.MenuItem;
@@ -115,7 +117,6 @@ public class PopcineDetailActivity extends AppCompatActivity {
         getWindow().setExitTransition(fade);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         movieDatabase = MovieDatabase.getInstance(getApplicationContext());
         setupUI();
         isFavorite();
