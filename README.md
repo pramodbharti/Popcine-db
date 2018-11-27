@@ -1,6 +1,8 @@
 # Popcine
 
-![Popcine app screenshots](https://github.com/pramodbharti/Popcine-db/blob/master/Popcine.jpeg)
+![Popcine app screenshots](https://github.com/pramodbharti/Popcine-db/screenshots/blob/master/popcine.jpeg)
+
+![Popcine app screenshots](https://github.com/pramodbharti/Popcine-db/screenshots/blob/master/popcine-landscape.jpeg)
 
 # About the code
 
